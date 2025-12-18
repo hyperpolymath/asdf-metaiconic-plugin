@@ -8,6 +8,20 @@ on:
 
 permissions: read-all
 
+concurrency:
+  group: mirror-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  # SSH host keys for verification (prevents MITM attacks)
+  # Updated: 2024-12 - Verify these periodically at:
+  # https://docs.gitlab.com/ee/user/gitlab_com/#ssh-host-keys-fingerprints
+  # https://docs.codeberg.org/security/ssh-fingerprint/
+  # https://bitbucket.org/blog/ssh-host-key-changes
+  GITLAB_HOST_KEY: "gitlab.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAfuCHKVTjquxvt6CM6tdG4SLp1Btn/nOeHHE5UOzRdf"
+  CODEBERG_HOST_KEY: "codeberg.org ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIVIC02vnjFyL+I4RHfvIGNtOgJMe769VTF1VR4EB3ZB"
+  BITBUCKET_HOST_KEY: "bitbucket.org ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIazEu89wgQZ4bqs3d63QSMzYVa0MuJ2e2gKTKqu+UUO"
+
 jobs:
   mirror-gitlab:
     runs-on: ubuntu-latest
@@ -16,12 +30,18 @@ jobs:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
         with:
           fetch-depth: 0
+          persist-credentials: false
+      - name: Configure SSH known hosts
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ env.GITLAB_HOST_KEY }}" >> ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
       - uses: webfactory/ssh-agent@dc588b651fe13675774614f8e6a936a468676387 # v0.9.0
         with:
           ssh-private-key: ${{ secrets.GITLAB_SSH_KEY }}
       - name: Mirror to GitLab
         run: |
-          git remote add gitlab git@gitlab.com:hyperpolymath/${GITHUB_REPOSITORY#*/}.git || true
+          git remote add gitlab "git@gitlab.com:hyperpolymath/${GITHUB_REPOSITORY#*/}.git" || true
           git push gitlab --all --force
           git push gitlab --tags --force
 
@@ -32,12 +52,18 @@ jobs:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
         with:
           fetch-depth: 0
+          persist-credentials: false
+      - name: Configure SSH known hosts
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ env.CODEBERG_HOST_KEY }}" >> ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
       - uses: webfactory/ssh-agent@dc588b651fe13675774614f8e6a936a468676387 # v0.9.0
         with:
           ssh-private-key: ${{ secrets.CODEBERG_SSH_KEY }}
       - name: Mirror to Codeberg
         run: |
-          git remote add codeberg git@codeberg.org:hyperpolymath/${GITHUB_REPOSITORY#*/}.git || true
+          git remote add codeberg "git@codeberg.org:hyperpolymath/${GITHUB_REPOSITORY#*/}.git" || true
           git push codeberg --all --force
           git push codeberg --tags --force
 
@@ -48,11 +74,17 @@ jobs:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
         with:
           fetch-depth: 0
+          persist-credentials: false
+      - name: Configure SSH known hosts
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ env.BITBUCKET_HOST_KEY }}" >> ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
       - uses: webfactory/ssh-agent@dc588b651fe13675774614f8e6a936a468676387 # v0.9.0
         with:
           ssh-private-key: ${{ secrets.BITBUCKET_SSH_KEY }}
       - name: Mirror to Bitbucket
         run: |
-          git remote add bitbucket git@bitbucket.org:hyperpolymath/${GITHUB_REPOSITORY#*/}.git || true
+          git remote add bitbucket "git@bitbucket.org:hyperpolymath/${GITHUB_REPOSITORY#*/}.git" || true
           git push bitbucket --all --force
           git push bitbucket --tags --force
