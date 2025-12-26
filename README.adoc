@@ -1,0 +1,43 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+= asdf-metaiconic-plugin
+:toc:
+:toc-placement!:
+
+An https://asdf-vm.com/[asdf] plugin for managing **metaiconic** installations.
+
+[NOTE]
+====
+**Repository project specification - will be uploaded shortly**
+
+This repository is awaiting its core specification and implementation.
+====
+
+toc::[]
+
+== Status
+
+[cols="1,3"]
+|===
+| Component | Status
+
+| Plugin Implementation
+| ⏳ Pending
+
+| Metaiconic Specification
+| ⏳ Pending
+
+| Documentation
+| ⏳ Pending
+|===
+
+== Infrastructure
+
+The following infrastructure is in place:
+
+* Multi-forge mirroring (GitLab, Codeberg, Bitbucket)
+* Instant sync propagation on push/release
+* AI assistant configuration (`.claude/CLAUDE.md`)
+
+== License
+
+AGPL-3.0-or-later
