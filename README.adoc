@@ -2,19 +2,24 @@
 = asdf-metaiconic-plugin
 
 image:https://img.shields.io/badge/license-AGPL--3.0-blue.svg[AGPL-3.0,link="https://www.gnu.org/licenses/agpl-3.0"] image:https://img.shields.io/badge/philosophy-Palimpsest-purple.svg[Palimpsest,link="https://github.com/hyperpolymath/palimpsest-licence"]
-:toc:
-:toc-placement!:
+:toc: macro
+:toc-title: Contents
+:toclevels: 3
+:icons: font
 
-An https://asdf-vm.com/[asdf] plugin for managing **metaiconic** installations.
-
-[NOTE]
-====
-**Repository project specification - will be uploaded shortly**
-
-This repository is awaiting its core specification and implementation.
-====
+Unified metadata index and discovery layer for the hyperpolymath asdf plugin ecosystem.
 
 toc::[]
+
+== Overview
+
+**asdf-metaiconic-plugin** is the central metadata registry for 68+ asdf plugins in the hyperpolymath ecosystem. It provides:
+
+* Standardized plugin metadata schema
+* Category and tag-based organization
+* Plugin discovery and search
+* Icon and branding consistency
+* Quality metrics aggregation
 
 == Status
 
@@ -22,23 +27,84 @@ toc::[]
 |===
 | Component | Status
 
-| Plugin Implementation
-| ⏳ Pending
+| Specification
+| ✓ link:SPECIFICATION.adoc[Complete]
 
-| Metaiconic Specification
-| ⏳ Pending
+| Registry Schema
+| ✓ link:registry/plugins.yaml[Implemented]
 
-| Documentation
-| ⏳ Pending
+| Category Definitions
+| ✓ link:registry/categories.yaml[Implemented]
+
+| Search CLI
+| ⏳ Phase 2
+
+| Icons
+| ⏳ Phase 2
 |===
+
+== Quick Start
+
+[source,bash]
+----
+# Search for security plugins
+asdf metaiconic search "vulnerability"
+
+# List all plugins by category
+asdf metaiconic list --category security
+
+# Get plugin info
+asdf metaiconic info trivy
+----
+
+== Registry Structure
+
+----
+registry/
+├── plugins.yaml      # Master plugin list (68+ entries)
+├── categories.yaml   # Category definitions (9 categories)
+└── schemas/          # Validation schemas
+----
+
+== Categories
+
+[cols="1,2"]
+|===
+| Category | Plugins
+
+| security | trivy, grype, syft, cosign, gitleaks, age, opa
+| database | arangodb, mariadb, neo4j, cassandra, surrealdb
+| config | nickel, dhall, cue, yq, taplo, bebop
+| network | coredns, envoy, pomerium, linkerd
+| crypto | step-ca, cfssl, lego, rekor, fulcio
+| build | apko, melange, restic, borg, hashicorp
+| language | ada, fortran, rescript, ocaml, vlang
+| ssg | casket-ssg, zola, cobalt, mdbook
+| webserver | httpd, varnish, openlitespeed
+|===
+
+== Ecosystem Integration
+
+This plugin is consumed by:
+
+* **asdf-plugin-configurator** - CLI tool uses registry for search
+* **asdf-ui-plugin** - Visual interface uses icons and metadata
+* **asdf-control-tower** - Dashboard aggregates plugin status
+
+See link:ECOSYSTEM.scm[ECOSYSTEM.scm] for full integration map.
 
 == Infrastructure
 
-The following infrastructure is in place:
-
-* Multi-forge mirroring (GitLab, Codeberg, Bitbucket)
+* Multi-forge mirroring (GitHub → GitLab, Codeberg, Bitbucket)
 * Instant sync propagation on push/release
 * AI assistant configuration (`.claude/CLAUDE.md`)
+
+== Links
+
+* link:SPECIFICATION.adoc[Full Specification]
+* link:registry/plugins.yaml[Plugin Registry]
+* https://github.com/hyperpolymath/asdf-control-tower[Control Tower]
+* https://github.com/hyperpolymath/asdf-plugin-configurator[Configurator CLI]
 
 == License
 
