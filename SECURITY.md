@@ -22,4 +22,3 @@ We respond within 48 hours.
 - Dependabot for dependency updates
 - CodeQL for code scanning
 - Secret scanning and push protection
-
